@@ -19,40 +19,40 @@ int main(int argc, char** argv)
 {
 
 	Mat frame, bgmask, out_frame;
-	
+
 
 
 	//Abrimos la webcam
 
 	VideoCapture cap;
-	cap.open(0);
+	cap.open(1);
 	if (!cap.isOpened())
 	{
-		printf("\nNo se puede abrir la cámara\n");
+		printf("\nNo se puede abrir la cï¿½mara\n");
 		return -1;
 	}
-        int cont = 0;
-        while (frame.empty()&& cont < 2000 ) {
+	int cont = 0;
+	while (frame.empty()&& cont < 2000 ) {
 
-                cap >> frame;
-                ++cont;
-        }
-        if (cont >= 2000) {
-                printf("No se ha podido leer un frame válido\n");
-                exit(-1);
-        }
+		cap >> frame;
+		++cont;
+	}
+	if (cont >= 2000) {
+		printf("No se ha podido leer un frame vÃ¡lido\n");
+		exit(-1);
+	}
 
-	// Creamos las ventanas que vamos a usar en la aplicación
+	// Creamos las ventanas que vamos a usar en la aplicaciÃ³n
 
 	namedWindow("Reconocimiento");
 	namedWindow("Fondo");
 
-        // creamos el objeto para la substracción de fondo
-	
+	// creamos el objeto para la substracciÃ³n de fondo
+
 	// creamos el objeto para el reconocimiento de gestos
 
-	// iniciamos el proceso de obtención del modelo del fondo
-	
+	// iniciamos el proceso de obtenciÃ³n del modelo del fondo
+
 
 	for (;;)
 	{
@@ -60,30 +60,30 @@ int main(int argc, char** argv)
 		//flip(frame, frame, 1);
 		if (frame.empty())
 		{
-			printf("Leído frame vacío\n");
+			printf("Leï¿½do frame vacï¿½o\n");
 			continue;
 		}
 		int c = cvWaitKey(40);
 		if ((char)c == 'q') break;
 
-		// obtenemos la máscara del fondo con el frame actual
-                
-                // CODIGO 2.1
-                // limpiar la máscara del fondo de ruido
-                //...
+		// obtenemos la mï¿½scara del fondo con el frame actual
+
+		// CODIGO 2.1
+		// limpiar la mï¿½scara del fondo de ruido
+		//...
 
 
-		// deteccion de las características de la mano
+		// deteccion de las caracterï¿½sticas de la mano
 
-                // mostramos el resultado de la sobstracción de fondo
-		
-                // mostramos el resultado del reconocimento de gestos
+		// mostramos el resultado de la sobstracciï¿½n de fondo
+
+		// mostramos el resultado del reconocimento de gestos
 
 		imshow("Reconocimiento", frame);
 
-		
+
 	}
-	
+
 	destroyWindow("Reconocimiento");
 	destroyWindow("Fondo");
 	cap.release();
