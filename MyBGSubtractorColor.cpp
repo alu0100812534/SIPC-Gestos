@@ -111,10 +111,20 @@ void MyBGSubtractorColor::LearnModel() {
 }
 void  MyBGSubtractorColor::ObtainBGMask(cv::Mat frame, cv::Mat &bgmask) {
 
-        // CODIGO 1.2
+        // CODIGO 1.2   HAY QUE REVISARLO
         // Definir los rangos máximos y mínimos para cada canal (HLS)
         // umbralizar las imágenes para cada rango y sumarlas para
         // obtener la máscara final con el fondo eliminado
-        //...
+        Mat hls_frame, dst;
+			  cv::cvtColor(frame, hls_frame, CV_BGR2HLS); // < ==== pasamos imagen a HLS
+
+				for(int i = 0; i < means.size();i++){
+					inRange(means[i],0, 255, dst);
+              //<============== Aqui falta una cosa
+           ///bgmask::sum(cv::Mat binaryMat(dst));
+				}
+     //...
+
+
 
 }
