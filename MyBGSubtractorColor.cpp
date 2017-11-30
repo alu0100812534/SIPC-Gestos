@@ -85,9 +85,7 @@ void MyBGSubtractorColor::LearnModel() {
 				      SAMPLE_SIZE, SAMPLE_SIZE), Scalar(0, 255, 0), 2);
 		}
 
-
-
-		imshow("Cubre los cuadrados con la mano y pulsa espacio", tmp_frame);
+    imshow("Cubre los cuadrados con la mano y pulsa espacio", tmp_frame);
 		char c = cvWaitKey(40);
 		if (c == ' ')
 		{
@@ -98,9 +96,16 @@ void MyBGSubtractorColor::LearnModel() {
 
         // CODIGO 1.1
         // Obtener las regiones de interés y calcular la media de cada una de ellas
-        // almacenar las medias en la variable means
-        // ...
-	
+        // almacenar las medias en la variable meansap
+			 cv::cvtColor(frame, hls_frame, CV_BGR2HLS); // < ==== pasamos imagen a HLS
+
+			 for (int i = 0; i < max_samples; i++){
+				  cv::Mat roi = hls_frame(Rect(samples_positions[i].x, samples_positions[i].y, SAMPLE_SIZE, SAMPLE_SIZE));
+					cv::Scalar aux = mean(roi);
+					means.push_back(aux);
+				}
+				// ...
+
         destroyWindow("Cubre los cuadrados con la mano y pulsa espacio");
 
 }
