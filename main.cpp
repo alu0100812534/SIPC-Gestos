@@ -18,14 +18,14 @@ using namespace cv;
 int main(int argc, char** argv)
 {
 
-    Mat frame, bgmask, out_frame;
+    Mat frame, bgmask, out_frame, draw;
 
 
 
     //Abrimos la webcam
 
     VideoCapture cap;
-    cap.open(1);
+    cap.open(0);
     if (!cap.isOpened())
     {
         printf("\nNo se puede abrir la c�mara\n");
@@ -47,6 +47,8 @@ int main(int argc, char** argv)
     namedWindow("Reconocimiento");
     namedWindow("Fondo");
 
+    namedWindow("Pintar");
+
     // creamos el objeto para la substracci�n de fondo
 
     MyBGSubtractorColor model(cap);
@@ -59,6 +61,11 @@ int main(int argc, char** argv)
     // iniciamos el proceso de obtenci�n del modelo del fondo
 
 
+    //OPCIONAL PINTAR Dedos
+    Scalar color = Scalar(0, 0, 0);       //define desired color
+    Mat draw_d = Mat(500, 500, CV_8UC3, color);
+    draw_d.copyTo(draw);
+
     for (;;)
     {
         cap >> frame;
@@ -70,7 +77,6 @@ int main(int argc, char** argv)
         }
         int c = cvWaitKey(40);
         if ((char)c == 'q') break;
-
 
         // obtenemos la m�scara del fondo con el frame actual
         model.ObtainBGMask(frame,bgmask);
@@ -88,7 +94,7 @@ int main(int argc, char** argv)
 
         // deteccion de las caracter�sticas de la mano
 
-        gesture.FeaturesDetection(bgmask,frame);
+        gesture.FeaturesDetection(bgmask,frame,draw);
 
         // mostramos el resultado de la sobstracci�n de fondo
 
@@ -98,6 +104,8 @@ int main(int argc, char** argv)
 
         imshow("Reconocimiento", frame);
 
+        //Pintamos con los gestos de la mano
+         imshow("Pintar", draw);
 
     }
 

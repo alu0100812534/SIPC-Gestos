@@ -34,13 +34,12 @@ double HandGesture::getAngle(Point s, Point e, Point f) {
     if (angle < -CV_PI) angle += 2 * CV_PI;
     return (angle * 180.0/CV_PI);
 }
-void HandGesture::FeaturesDetection(Mat mask, Mat output_img) {
+void HandGesture::FeaturesDetection(Mat mask, Mat output_img, Mat &draw_img) {
 
     vector<vector<Point> > contours;
     Mat temp_mask;
     mask.copyTo(temp_mask);
     int index = -1;
-
     // CODIGO 3.1
     // detección del contorno de la mano y selección del contorno más largo
     //...
@@ -75,7 +74,9 @@ void HandGesture::FeaturesDetection(Mat mask, Mat output_img) {
         vector<Vec4i> defects;
         convexityDefects(contours[index], hull, defects);
 
-
+        Point aux;
+        int x = 0;
+        int y = 0;
         int cont = 0;
         for (int i = 0; i < defects.size(); i++) {
             Point s = contours[index][defects[i][0]];
@@ -87,9 +88,50 @@ void HandGesture::FeaturesDetection(Mat mask, Mat output_img) {
             // CODIGO 3.2
             // filtrar y mostrar los defectos de convexidad
             //...
-            if (angle<90 && depth>50)
-                circle(output_img,f,5,Scalar(0,255,0),3);
+            if (angle < 90.0 && angle > 20.0){
+               convexityDefects(contours[index], hull, defects);
+               circle(output_img, f, 5, Scalar(0, 255, 0),5, 0);
+               aux = f;
+               cont++;
+            }
+            //opcional punto medio hull
+            Point p1 = contours[index].at(defects[i].val[2]);
+            x += p1.x;
+            y += p1.y;
 
         }
+       // Contar dedos de la mano ## opcional 1
+        Point p(100,70);
+        string contt = "Dedos: " + to_string(cont);
+        putText(output_img, contt, p, FONT_HERSHEY_SCRIPT_SIMPLEX, 2,  Scalar(255, 0, 0));
+
+        // Pintar punto medio ConxexHUll  ## opcional 2
+        circle(output_img, Point(x/defects.size(), y/defects.size()), 3, Scalar( 0, 0, 255), 3);
+
+        // Dibujar segun dedos ## opcional 3
+          switch(cont){
+              case 1:
+                  circle(draw_img, aux, 40, Scalar(50, 50, 50),-5, 0);
+              break;
+              case 2:
+                  circle(draw_img, aux, 40, Scalar(255, 0, 0),-5, 0);
+              break;
+              case 3:
+                  circle(draw_img, aux, 40, Scalar(0, 255, 0),-5, 0);
+              break;
+              case 4:
+                  circle(draw_img, aux, 40, Scalar(0, 0, 255),-5, 0);
+              break;
+              default:
+                  Point p(100,70);
+                  string mess = "Dibujar algo...";
+                  putText(draw_img, mess, p, FONT_HERSHEY_SCRIPT_SIMPLEX, 2,  Scalar(255, 0, 0));
+                  /*  //borrar con puño cerrado o dedos juntos
+                    Scalar color = Scalar(0, 0, 0);       //define desired color
+                    Mat draw_d = Mat(500, 500, CV_8UC3, color);
+                    draw_d.copyTo(draw_img);*/
+              break;
+            }
+
     }
 }
